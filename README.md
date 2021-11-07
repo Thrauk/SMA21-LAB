@@ -1,16 +1,15 @@
-# laborator_sma
+Stoica Theodor
 
-A new Flutter project.
+How to compile this project:
 
-## Getting Started
+Ide used: IntelliJ
+https://www.jetbrains.com/idea/
 
-This project is a starting point for a Flutter application.
+How to install flutter:
+https://flutter.dev/docs/get-started/install/windows
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+1. Go into pubspec.yaml and click the pub get option
+2. Make sure you have an emulator
+3. Run lib/main.dart
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
