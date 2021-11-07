@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "285485249314",
+    "firebase_url": "https://smart-wallet-3a564-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "smart-wallet-3a564",
+    "storage_bucket": "smart-wallet-3a564.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285485249314:android:baa8a1bf47d31c92e0eb7b",
+        "android_client_info": {
+          "package_name": "com.example.laborator_sma"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "285485249314-djkjniu7snlmqc810adkcujdi5md51s3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHtJsi7vYW1-PfA-COdtV_LIWmS5eXb9A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "285485249314-djkjniu7snlmqc810adkcujdi5md51s3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
