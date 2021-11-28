@@ -2,8 +2,10 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:laborator_sma/lib/src/models/monthly_expenses.dart';
 import 'package:laborator_sma/lib/src/models/payment.dart';
+import 'package:laborator_sma/lib/src/widgets/edit_payment_popup.dart';
 import 'package:laborator_sma/lib/src/widgets/payment_list_element.dart';
 
 class ViewPayments extends StatelessWidget {
@@ -36,6 +38,7 @@ class _ViewPaymentsPageState extends State<ViewPaymentsPage> {
   TextEditingController expensesController = TextEditingController();
   TextEditingController incomeController = TextEditingController();
   List<Payment> payments = List<Payment>.empty();
+  List<String?> types = List<String>.empty();
   String dropdownValue = '';
   @override
   void initState() {
@@ -48,6 +51,9 @@ class _ViewPaymentsPageState extends State<ViewPaymentsPage> {
         for(String key in snapshot.value.keys) {
           payments.add(Payment.fromJson(key, snapshot.value[key]));
         }
+        types = payments.map((payment) {
+          return payment.type;
+        }).toSet().toList();
       });
     });
   }
@@ -68,12 +74,19 @@ class _ViewPaymentsPageState extends State<ViewPaymentsPage> {
                 padding: const EdgeInsets.all(8),
                 itemCount: payments.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return PaymentListElement(number: index, payment: payments[index]);
+                  return PaymentListElement(number: index, payment: payments[index], types: types,);
                 }
               ),
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(context: context, builder: (BuildContext context) => EditPaymentPopup(payment: Payment.empty(DateFormat('yyyy-mm-dd hh:mm:ss').format(DateTime.now())), fd: FirebaseDatabase.instance, typesList: types));
+        },
+        child: const Icon(Icons.add),
+        backgroundColor: Colors.green,
       ),
     );
   }

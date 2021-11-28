@@ -13,9 +13,15 @@ class Payment {
   DateTime? dateTime;
 
   Payment.fromJson(this.date, Map<dynamic, dynamic> json) {
-    cost = json['cost'];
+    cost = json['cost'] * 1.0;
     name = json['name'];
     type = json['type'];
+  }
+
+  Payment.empty(this.date) {
+
+    name = '';
+    cost = 0.0;
   }
 
 
