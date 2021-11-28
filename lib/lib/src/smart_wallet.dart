@@ -3,8 +3,10 @@ import 'dart:convert';
 
 import 'package:battery_plus/battery_plus.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart';
 import 'package:laborator_sma/lib/src/models/monthly_expenses.dart';
 
 class SmartWallet extends StatelessWidget {
@@ -36,10 +38,23 @@ class _SmartWalletPageState extends State<SmartWalletPage> {
   MonthlyExpenses? monthlyExpenses;
   TextEditingController expensesController = TextEditingController();
   TextEditingController incomeController = TextEditingController();
-
+  List<String> months = List<String>.empty();
+  String dropdownValue = '';
   @override
   void initState() {
     super.initState();
+    fb.reference().child('calendar').onValue.listen((event) {
+      DataSnapshot snapshot = event.snapshot;
+      setState(() {
+        months = List<String>.empty(growable: true);
+        months.add('');
+        print(snapshot.value);
+        for(String key in snapshot.value.keys) {
+          months.add(key);
+        }
+        print(months);
+      });
+    });
   }
 
   @override
@@ -53,6 +68,37 @@ class _SmartWalletPageState extends State<SmartWalletPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: <Widget>[
+            DropdownButton(
+              items: months.map((String value) {
+                return DropdownMenuItem(child: Text(value), value: value);
+              }).toList(),
+              value: dropdownValue,
+              onChanged: (String? newValue) async {
+                dropdownValue = newValue!;
+
+
+                if(dropdownValue != '') {
+                  DataSnapshot data = await ref
+                      .child('calendar')
+                      .child(dropdownValue.toLowerCase())
+                      .get();
+                  setState( () {
+
+                    monthlyExpenses = MonthlyExpenses.fromJson(
+                        queryValue.toLowerCase(), data.value);
+                    if (monthlyExpenses != null) {
+                      setState(() {
+                        incomeController.text =
+                            monthlyExpenses!.income.toString();
+                        expensesController.text =
+                            monthlyExpenses!.expenses.toString();
+                      });
+                    }
+                  });
+                }
+
+              },
+            ),
             Text(errorMessage),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -76,10 +122,16 @@ class _SmartWalletPageState extends State<SmartWalletPage> {
             ),
             ElevatedButton(
               onPressed: () async {
-                if(monthlyExpenses != null && expensesController.text != '' && incomeController.text != '') {
-                  monthlyExpenses!.expenses = int.parse(expensesController.text);
+                if (monthlyExpenses != null &&
+                    expensesController.text != '' &&
+                    incomeController.text != '') {
+                  monthlyExpenses!.expenses =
+                      int.parse(expensesController.text);
                   monthlyExpenses!.income = int.parse(incomeController.text);
-                  await ref.child('calendar').child(monthlyExpenses!.month).update(monthlyExpenses!.toJson());
+                  await ref
+                      .child('calendar')
+                      .child(monthlyExpenses!.month)
+                      .update(monthlyExpenses!.toJson());
                 }
               },
               child: const Text('UPDATE'),
@@ -108,23 +160,21 @@ class _SmartWalletPageState extends State<SmartWalletPage> {
                       if (data.value != null) {
                         errorMessage = '';
                         print(data.value);
-                        monthlyExpenses =
-                            MonthlyExpenses.fromJson(queryValue.toLowerCase(), data.value);
+                        monthlyExpenses = MonthlyExpenses.fromJson(
+                            queryValue.toLowerCase(), data.value);
                         if (monthlyExpenses != null) {
                           setState(() {
                             incomeController.text =
-                            monthlyExpenses!.income.toString();
+                                monthlyExpenses!.income.toString();
                             expensesController.text =
-                            monthlyExpenses!.expenses.toString();
+                                monthlyExpenses!.expenses.toString();
                           });
                         }
-                      }
-                      else {
+                      } else {
                         setState(() {
                           errorMessage = 'Value can not be found';
                         });
                       }
-
                     },
                     child: const Text('SEARCH'),
                     style: ElevatedButton.styleFrom(
@@ -138,6 +188,13 @@ class _SmartWalletPageState extends State<SmartWalletPage> {
       ),
     );
   }
+
+  Future<List<String>> getMonths() async {
+    List<String> ret = List<String>.empty();
+    DataSnapshot data = await fb.reference().child('calendar').get();
+    return data.value().map((el) => ret.add(el));
+  }
+
 }
 
 /*
