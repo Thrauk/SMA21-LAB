@@ -43,6 +43,7 @@ class _ViewPaymentsPageState extends State<ViewPaymentsPage> {
   @override
   void initState() {
     super.initState();
+    fb.reference().child('wallet').keepSynced(true);
     fb.reference().child('wallet').onValue.listen((event) {
       DataSnapshot snapshot = event.snapshot;
       setState(() {
