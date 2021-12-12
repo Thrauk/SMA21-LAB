@@ -3,8 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:laborator_sma/lib/src/auth.dart';
 import 'package:laborator_sma/lib/src/models/monthly_expenses.dart';
 import 'package:laborator_sma/lib/src/models/payment.dart';
+import 'package:laborator_sma/lib/src/repository/auth_repository.dart';
 import 'package:laborator_sma/lib/src/widgets/edit_payment_popup.dart';
 import 'package:laborator_sma/lib/src/widgets/payment_list_element.dart';
 
@@ -44,6 +46,7 @@ class _ViewPaymentsPageState extends State<ViewPaymentsPage> {
   List<Payment> payments = List<Payment>.empty();
   List<String?> types = List<String>.empty();
   String dropdownValue = '';
+  String ownerId = FirebaseAuthRepository().currentUser.id;
 
   @override
   void initState() {
@@ -56,7 +59,11 @@ class _ViewPaymentsPageState extends State<ViewPaymentsPage> {
           payments = List<Payment>.empty(growable: true);
           print(snapshot.value);
           for (String key in snapshot.value.keys) {
-            payments.add(Payment.fromJson(key, snapshot.value[key]));
+            Payment aux = Payment.fromJson(key, snapshot.value[key]);
+            if(aux.ownerUid == ownerId)
+            {
+              payments.add(aux);
+            }
           }
           types = payments
               .map((payment) {
@@ -86,6 +93,15 @@ class _ViewPaymentsPageState extends State<ViewPaymentsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Smart Wallet'),
+        leading: GestureDetector(
+          onTap: () {
+            FirebaseAuthRepository().logOut();
+            Navigator.of(context).push<void>(MaterialPageRoute<void>(builder: (_) => const Auth()));
+          },
+          child: const Icon(
+            Icons.exit_to_app
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),

@@ -5,17 +5,20 @@ class Payment {
     required this.date,
     this.cost,
     this.name,
-    this.type
+    this.type,
+    this.ownerUid
   }) {dateTime = DateFormat("yyyy-MM-dd hh:mm:ss").parse(date);}
   final String date;
   String? name, type;
   double? cost;
   DateTime? dateTime;
+  String? ownerUid;
 
   Payment.fromJson(this.date, Map<dynamic, dynamic> json) {
     cost = json['cost'] * 1.0;
     name = json['name'];
     type = json['type'];
+    ownerUid = json['ownerUid'];
   }
 
   Payment.empty(this.date) {
@@ -29,5 +32,6 @@ class Payment {
     'cost': cost,
     'name': name,
     'type': type,
+    'ownerUid' : ownerUid,
   };
 }

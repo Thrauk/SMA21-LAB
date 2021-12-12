@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:laborator_sma/lib/src/models/payment.dart';
+import 'package:laborator_sma/lib/src/repository/auth_repository.dart';
 
 
 class EditPaymentPopup extends StatelessWidget {
@@ -100,6 +101,7 @@ class _EditPaymentPopupState extends State<EditPaymentPopupAux> {
               payment.type = dropdownValue;
               payment.name = nameController.value.text != '' ? nameController.value.text : payment.name;
               payment.cost = nameController.value.text != '' ? double.parse(costController.value.text) : payment.cost;
+              payment.ownerUid = FirebaseAuthRepository().currentUser.id;
               await fd.reference().child('wallet').child(payment.date).update(payment.toJson());
             }
 
