@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:laborator_sma/lib/src/google_map.dart';
 import 'package:laborator_sma/lib/src/repository/auth_repository.dart';
 import 'package:laborator_sma/lib/src/view_payments.dart';
 
@@ -19,9 +20,5 @@ Future<void> main() async {
     ViewPayments.connState = ConnState.online;
   }
   FirebaseAuthRepository firebaseAuthRepository = FirebaseAuthRepository();
-  if(firebaseAuthRepository.currentUser.isNotEmpty){
-    runApp(const ViewPayments());
-  } else {
-    runApp(const Auth());
-  }
+  runApp(MapDisplay());
 }
